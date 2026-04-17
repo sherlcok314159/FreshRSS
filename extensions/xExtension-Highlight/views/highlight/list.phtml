@@ -1,0 +1,57 @@
+<div class="highlights-page">
+	<div class="hl-page-header">
+		<h2><?= _t('ext.highlight.highlights_title') ?></h2>
+		<span class="hl-page-count"><?= (int)$this->total ?> <?= _t('ext.highlight.entries_count') ?></span>
+	</div>
+
+	<?php if (empty($this->entries)): ?>
+	<div class="hl-empty-state">
+		<p><?= _t('ext.highlight.no_highlights') ?></p>
+	</div>
+	<?php else: ?>
+	<div class="hl-entries">
+		<?php foreach ($this->entries as $entry):
+			$highlights = json_decode($entry['highlights_json'] ?? '[]', true) ?: [];
+			if (empty($highlights)) continue;
+			$date = is_numeric($entry['date']) ? (int)$entry['date'] : strtotime((string)$entry['date']);
+		?>
+		<article class="hl-entry-card">
+			<header class="hl-entry-header">
+				<a href="<?= htmlspecialchars((string)($entry['link'] ?? '#')) ?>"
+				   class="hl-entry-title" target="_blank" rel="noopener">
+					<?= htmlspecialchars((string)($entry['title'] ?? '')) ?>
+				</a>
+				<div class="hl-entry-meta">
+					<?php if (!empty($entry['feed_name'])): ?>
+					<span class="hl-feed-name"><?= htmlspecialchars((string)$entry['feed_name']) ?></span>
+					<span class="hl-meta-sep">&middot;</span>
+					<?php endif; ?>
+					<time datetime="<?= date('c', $date) ?>"><?= date('Y-m-d H:i', $date) ?></time>
+					<span class="hl-meta-sep">&middot;</span>
+					<span><?= count($highlights) ?> <?= _t('ext.highlight.highlights_n') ?></span>
+				</div>
+			</header>
+			<div class="hl-entry-excerpts">
+			<?php foreach ($highlights as $hl): ?>
+			<div class="hl-excerpt" style="border-left-color: <?= htmlspecialchars((string)($hl['color'] ?? '#4ade80')) ?>">
+				<?php if (!empty($hl['html'])): ?>
+					<?= $hl['html'] ?>
+				<?php else: ?>
+					<?= htmlspecialchars((string)($hl['text'] ?? '')) ?>
+				<?php endif; ?>
+			</div>
+			<?php endforeach; ?>
+			</div>
+		</article>
+		<?php endforeach; ?>
+	</div>
+
+	<?php if ($this->hasMore): ?>
+	<div class="hl-pagination">
+		<a href="?c=highlight&amp;a=list&amp;page=<?= (int)$this->page + 1 ?>" class="hl-load-more-btn">
+			<?= _t('ext.highlight.load_more') ?>
+		</a>
+	</div>
+	<?php endif; ?>
+	<?php endif; ?>
+</div>

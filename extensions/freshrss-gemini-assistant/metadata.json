@@ -1,0 +1,8 @@
+{
+  "name": "Gemini Assistant",
+  "author": "tony",
+  "description": "Summarize and translate feed entries using Google Gemini.",
+  "version": 0.1,
+  "entrypoint": "GeminiAssistant",
+  "type": "user"
+}

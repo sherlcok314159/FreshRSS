@@ -1,0 +1,7 @@
+.gemini-assistant { margin-bottom: 1em; }
+.gemini-assistant .gemini-buttons { display: flex; gap: 0.5em; margin-bottom: 0.5em; flex-wrap: wrap; }
+.gemini-assistant .gemini-buttons a.btn.gemini-loading { opacity: 0.6; pointer-events: none; }
+.gemini-assistant .gemini-result { margin-bottom: 0.5em; }
+.gemini-assistant .gemini-content.hidden,
+.gemini-assistant .gemini-status.hidden { display: none; }
+.gemini-assistant blockquote.gemini-content { padding: 0.6em 1em; border-left: 3px solid #888; background: rgba(128,128,128,0.08); white-space: normal; }

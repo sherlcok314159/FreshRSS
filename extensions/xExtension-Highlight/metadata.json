@@ -1,0 +1,8 @@
+{
+	"name": "Text Highlight",
+	"author": "Tony",
+	"description": "Highlight text in articles with underline style. Highlights are saved and restored automatically.",
+	"version": "0.1.0",
+	"entrypoint": "Highlight",
+	"type": "user"
+}

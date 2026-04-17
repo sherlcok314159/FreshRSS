@@ -1453,14 +1453,14 @@ SQL;
 		}
 		$guids = array_unique($guids);
 		$sql = 'SELECT guid, ' . static::sqlHexEncode('hash') .
-			' AS hex_hash FROM `_entry` WHERE id_feed=? AND guid IN (' . str_repeat('?,', count($guids) - 1) . '?)';
+			' AS hex_hash, attributes FROM `_entry` WHERE id_feed=? AND guid IN (' . str_repeat('?,', count($guids) - 1) . '?)';
 		$stm = $this->pdo->prepare($sql);
 		$values = [$id_feed];
 		$values = array_merge($values, $guids);
 		if ($stm !== false && $stm->execute($values)) {
 			$rows = $stm->fetchAll(PDO::FETCH_ASSOC);
 			foreach ($rows as $row) {
-				$result[$row['guid']] = $row['hex_hash'];
+				$result[$row['guid']] = ['hash' => $row['hex_hash'], 'attributes' => $row['attributes'] ?? ''];
 			}
 			return $result;
 		} else {

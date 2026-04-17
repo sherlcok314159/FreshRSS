@@ -598,7 +598,8 @@ class FreshRSS_feed_Controller extends FreshRSS_ActionController {
 					}
 
 					if (isset($existingHashForGuids[$entry->guid()])) {
-						$existingHash = $existingHashForGuids[$entry->guid()];
+						$existingData = $existingHashForGuids[$entry->guid()];
+						$existingHash = $existingData['hash'];
 						if (strcasecmp($existingHash, $entry->hash()) !== 0) {
 							//This entry already exists but has been updated
 							$entry->_isUpdated(true);
@@ -623,6 +624,29 @@ class FreshRSS_feed_Controller extends FreshRSS_ActionController {
 
 							// If the entry has changed, there is a good chance for the full content to have changed as well.
 							$entry->loadCompleteContent(true);
+
+							// Preserve user highlights whose text still exists in the updated content
+							$existingAttrs = json_decode($existingData['attributes'] ?? '{}', true);
+							if (!empty($existingAttrs['highlights'])) {
+								$rawText = strip_tags($entry->content(false));
+								// Normalize: collapse whitespace, unify quotes for fuzzy matching
+								$normText = preg_replace('/\s+/u', ' ', $rawText);
+								$normText = str_replace(["\u{201c}", "\u{201d}", "\u{2018}", "\u{2019}"], ['"', '"', "'", "'"], $normText);
+								$normText = preg_replace('/(?<=[\x{2E80}-\x{9FFF}\x{F900}-\x{FAFF}\x{FE30}-\x{FE4F}\x{FF00}-\x{FFEF}\x{2014}\x{2015}\x{2026}\x{3000}-\x{303F}]) | (?=[\x{2E80}-\x{9FFF}\x{F900}-\x{FAFF}\x{FE30}-\x{FE4F}\x{FF00}-\x{FFEF}\x{2014}\x{2015}\x{2026}\x{3000}-\x{303F}])/u', '', $normText);
+								$preserved = [];
+								foreach ($existingAttrs['highlights'] as $hl) {
+									if (empty($hl['text'])) continue;
+									$normHl = preg_replace('/\s+/u', ' ', $hl['text']);
+									$normHl = str_replace(["\u{201c}", "\u{201d}", "\u{2018}", "\u{2019}"], ['"', '"', "'", "'"], $normHl);
+									$normHl = preg_replace('/(?<=[\x{2E80}-\x{9FFF}\x{F900}-\x{FAFF}\x{FE30}-\x{FE4F}\x{FF00}-\x{FFEF}\x{2014}\x{2015}\x{2026}\x{3000}-\x{303F}]) | (?=[\x{2E80}-\x{9FFF}\x{F900}-\x{FAFF}\x{FE30}-\x{FE4F}\x{FF00}-\x{FFEF}\x{2014}\x{2015}\x{2026}\x{3000}-\x{303F}])/u', '', $normHl);
+									if (str_contains($normText, $normHl)) {
+										$preserved[] = $hl;
+									}
+								}
+								if (!empty($preserved)) {
+									$entry->_attribute('highlights', $preserved);
+								}
+							}
 
 							$entryDAO->updateEntry($entry->toArray());
 						}

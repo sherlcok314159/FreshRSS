@@ -1,0 +1,8 @@
+{
+	"name": "Pangu Format",
+	"author": "Tony",
+	"description": "Automatically adds spaces between CJK and half-width characters when articles are saved, so that formatting is permanent and consistent.",
+	"version": "1.0.0",
+	"entrypoint": "PanguFormat",
+	"type": "user"
+}

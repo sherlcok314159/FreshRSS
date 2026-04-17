@@ -1,0 +1,7 @@
+div.kagi-summary { margin: 1em 0; }
+div.kagi-result blockquote { margin-top: 0.5em; }
+div.kagi-summary a { transform: scale(0.8); }
+a.btn.kagi-loading { opacity: 0.5; }
+a.btn.kagi-loading:hover { color: inherit; background-color: inherit; }
+a.btn.kagi-loading:active { color: inherit; background-color: inherit; }
+div.kagi-summary .hidden { display: none; }

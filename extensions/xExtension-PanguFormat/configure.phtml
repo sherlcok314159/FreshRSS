@@ -1,0 +1,28 @@
+<?php
+/** @var PanguFormatExtension $this->extension */
+$ext = $this->extension;
+$lastMigration = $ext->getUserConfigurationValue('last_migration');
+$migratedCount = $ext->getUserConfigurationValue('migrated_count');
+?>
+
+<div class="form-group">
+	<p><?= _t('ext.panguformat.description') ?></p>
+</div>
+
+<form method="post" action="">
+	<input type="hidden" name="_csrf" value="<?= FreshRSS_Auth::csrfToken() ?>" />
+	<input type="hidden" name="action" value="format_existing" />
+
+	<div class="form-group">
+		<label><?= _t('ext.panguformat.migrate_title') ?></label>
+		<p class="help"><?= _t('ext.panguformat.migrate_help') ?></p>
+		<?php if ($lastMigration): ?>
+			<p class="alert alert-success">
+				<?= sprintf(_t('ext.panguformat.migrate_done'), (int)$migratedCount, date('Y-m-d H:i', (int)$lastMigration)) ?>
+			</p>
+		<?php endif; ?>
+		<button type="submit" class="btn btn-important">
+			<?= _t('ext.panguformat.migrate_button') ?>
+		</button>
+	</div>
+</form>

@@ -1,0 +1,31 @@
+.feed-priority-shortcut {
+    float: right;
+}
+
+.feed-priority-shortcut .dropdown-toggle:hover {
+    text-decoration: none;
+}
+
+.feed-priority-shortcut .dropdown-menu {
+    min-width: calc(8rem + 10px);
+    padding: 0;
+}
+
+@media (max-width: 840px) {
+    .feed-priority-shortcut.dropdown {
+        position: relative;
+    }
+
+    .feed-priority-shortcut .dropdown-menu {
+        width: calc(8rem + 10px);
+        left: inherit;
+        right: 0px;
+    }
+}
+
+.feed-priority-shortcut .dropdown-menu .item {
+    display: inline-block;
+    width: 2rem;
+    text-align: center;
+    cursor: pointer;
+}
