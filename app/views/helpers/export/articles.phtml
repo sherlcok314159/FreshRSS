@@ -1,0 +1,47 @@
+<?php
+declare(strict_types=1);
+/** @var FreshRSS_View $this */
+$username = Minz_User::name() ?? Minz_User::INTERNAL_USER;
+
+$options = JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+
+$articles = array(
+	'id' => 'user/' . str_replace('/', '', $username) . '/state/org.freshrss/' . $this->type,
+	'title' => $this->list_title,
+	'author' => $username,
+	'items' => array(),
+);
+
+echo rtrim(json_encode($articles, $options) ?: '', " ]}\n\r\t"), "\n";
+$first = true;
+
+if (empty($this->entryIdsTagNames)) {
+	$this->entryIdsTagNames = array();
+}
+
+foreach ($this->entries as $entry) {
+	if (!$this->internal_rendering) {
+		/** @var FreshRSS_Entry */
+		$entry = Minz_ExtensionManager::callHook('entry_before_display', $entry);
+	}
+	if ($entry == null) {
+		continue;
+	}
+
+	$feed = $this->feed ?? FreshRSS_Category::findFeed($this->categories, $entry->feedId());
+	$entry->_feed($feed);
+
+	$article = $entry->toGReader('freshrss', $this->entryIdsTagNames['e_' . $entry->id()] ?? []);
+
+	$line = json_encode($article, $options);
+	if ($line != '') {
+		if ($first) {
+			$first = false;
+		} else {
+			echo ",\n";
+		}
+		echo $line;
+	}
+}
+
+echo "\n]}\n";
